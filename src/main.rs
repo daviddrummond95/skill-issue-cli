@@ -2,6 +2,7 @@ mod config;
 mod engine;
 mod finding;
 mod output;
+mod remote;
 mod rules;
 mod scanner;
 
@@ -9,6 +10,7 @@ use clap::Parser;
 use config::{CliArgs, Config, ConfigFile};
 use engine::Engine;
 use rules::RuleRegistry;
+use std::path::PathBuf;
 
 fn main() {
     let args = CliArgs::parse();
@@ -19,43 +21,69 @@ fn main() {
 
     let quiet = args.quiet;
     let verbose = args.verbose;
+    let is_remote = args.remote.is_some();
 
-    // Load config file
-    let config_path = args
-        .config
-        .clone()
-        .unwrap_or_else(|| args.path.join(".skill-issue.toml"));
-    let config_file = if config_path.exists() {
-        match std::fs::read_to_string(&config_path) {
-            Ok(contents) => match toml::from_str::<ConfigFile>(&contents) {
-                Ok(cf) => Some(cf),
+    // Skip config file loading for remote scans
+    let config_file = if is_remote {
+        None
+    } else {
+        let config_path = args
+            .config
+            .clone()
+            .unwrap_or_else(|| args.path.join(".skill-issue.toml"));
+        if config_path.exists() {
+            match std::fs::read_to_string(&config_path) {
+                Ok(contents) => match toml::from_str::<ConfigFile>(&contents) {
+                    Ok(cf) => Some(cf),
+                    Err(e) => {
+                        eprintln!("warning: failed to parse config file: {e}");
+                        None
+                    }
+                },
                 Err(e) => {
-                    eprintln!("warning: failed to parse config file: {e}");
+                    eprintln!("warning: failed to read config file: {e}");
                     None
                 }
-            },
-            Err(e) => {
-                eprintln!("warning: failed to read config file: {e}");
-                None
             }
+        } else {
+            None
         }
-    } else {
-        None
     };
 
     let config = Config::from_args_and_file(args, config_file);
 
-    if verbose {
-        eprintln!("Scanning: {}", config.path.display());
-    }
-
-    // Scan files
-    let files = match scanner::scan_directory(&config.path) {
-        Ok(f) => f,
-        Err(e) => {
-            eprintln!("error: {e}");
-            std::process::exit(2);
+    // Scan files — either remote or local
+    let (files, display_path) = if let Some(ref spec) = config.remote {
+        if verbose {
+            eprintln!("Scanning remote: {spec}");
         }
+
+        let files = match remote::fetch_remote_skill(spec, config.github_token.as_deref(), verbose)
+        {
+            Ok(f) => f,
+            Err(e) => {
+                eprintln!("error: {e}");
+                std::process::exit(2);
+            }
+        };
+
+        let display_path = PathBuf::from(spec);
+        (files, display_path)
+    } else {
+        if verbose {
+            eprintln!("Scanning: {}", config.path.display());
+        }
+
+        let files = match scanner::scan_directory(&config.path) {
+            Ok(f) => f,
+            Err(e) => {
+                eprintln!("error: {e}");
+                std::process::exit(2);
+            }
+        };
+
+        let display_path = config.path.clone();
+        (files, display_path)
     };
 
     if verbose {
@@ -75,7 +103,7 @@ fn main() {
     let findings = engine.run(&files);
 
     // Output
-    let output = output::format_findings(&config.format, &findings, &config.path);
+    let output = output::format_findings(&config.format, &findings, &display_path);
     if !quiet || !findings.is_empty() {
         println!("{output}");
     }

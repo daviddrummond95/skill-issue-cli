@@ -46,6 +46,14 @@ pub struct CliArgs {
     /// Disable colored output
     #[arg(long)]
     pub no_color: bool,
+
+    /// Remote GitHub skill specifier (e.g. owner/repo, owner/repo@skill-name, GitHub URL)
+    #[arg(long)]
+    pub remote: Option<String>,
+
+    /// GitHub API token for authenticated requests (or set GITHUB_TOKEN env var)
+    #[arg(long, env = "GITHUB_TOKEN")]
+    pub github_token: Option<String>,
 }
 
 #[derive(Debug, Clone, clap::ValueEnum)]
@@ -102,6 +110,8 @@ pub struct Config {
     pub no_color: bool,
     pub rule_overrides: HashMap<String, RuleOverride>,
     pub allowlist: Vec<AllowlistEntry>,
+    pub remote: Option<String>,
+    pub github_token: Option<String>,
 }
 
 impl Config {
@@ -125,6 +135,8 @@ impl Config {
             no_color: args.no_color,
             rule_overrides: file.rules,
             allowlist: file.allowlist,
+            remote: args.remote,
+            github_token: args.github_token,
         }
     }
 
