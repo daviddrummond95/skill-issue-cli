@@ -182,7 +182,7 @@ fn discover_skills(
             // "SKILL.md" at root → prefix "", name is the repo name
             let prefix = match entry.path.rfind('/') {
                 Some(idx) => &entry.path[..=idx], // includes trailing /
-                None => "",                        // root SKILL.md
+                None => "",                       // root SKILL.md
             };
 
             let name = if prefix.is_empty() {

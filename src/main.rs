@@ -58,11 +58,8 @@ fn main() {
             eprintln!("Scanning remote: {spec}");
         }
 
-        let files = match remote::fetch_remote_skill(
-            spec,
-            config.github_token.as_deref(),
-            verbose,
-        ) {
+        let files = match remote::fetch_remote_skill(spec, config.github_token.as_deref(), verbose)
+        {
             Ok(f) => f,
             Err(e) => {
                 eprintln!("error: {e}");
