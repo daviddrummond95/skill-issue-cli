@@ -1,0 +1,71 @@
+[[rules]]
+id = "SL-INJ-001"
+name = "Prompt Injection Pattern"
+severity = "error"
+pattern = '(?i)(?:ignore\s+(?:all\s+)?previous\s+instructions|disregard\s+(?:all\s+)?(?:previous|above)|forget\s+(?:all\s+)?(?:previous|your)\s+instructions|you\s+are\s+now\s+(?:a|an)\s+(?:different|new))'
+applies_to = ["markdown"]
+message_template = "Prompt injection pattern detected: {match}"
+
+[[rules]]
+id = "SL-INJ-002"
+name = "System Prompt Override"
+severity = "error"
+pattern = '(?i)(?:system\s*:\s*you\s+are|<\|system\|>|<<\s*SYS\s*>>|\[SYSTEM\]|\[INST\])'
+applies_to = ["markdown"]
+message_template = "System prompt override attempt: {match}"
+
+[[rules]]
+id = "SL-INJ-003"
+name = "Role Manipulation"
+severity = "error"
+pattern = '(?i)(?:act\s+as\s+(?:if\s+)?(?:you\s+are|a)\s+(?:different|new|root|admin)|pretend\s+(?:you\s+are|to\s+be)\s+(?:a\s+)?(?:different|new|root|admin))'
+applies_to = ["markdown"]
+message_template = "Role manipulation attempt: {match}"
+
+[[rules]]
+id = "SL-INJ-004"
+name = "Instruction Boundary Bypass"
+severity = "error"
+pattern = '(?i)(?:end\s+of\s+(?:system\s+)?instructions?|beginning\s+of\s+(?:new\s+)?instructions?|---\s*new\s+instructions?\s*---)'
+applies_to = ["markdown"]
+message_template = "Instruction boundary bypass attempt: {match}"
+
+[[rules]]
+id = "SL-INJ-005"
+name = "SQL Injection Pattern"
+severity = "warning"
+pattern = "(?i)(?:(?:SELECT|INSERT|UPDATE|DELETE|DROP|UNION)\\s+.*(?:FROM|INTO|SET|TABLE|ALL)\\s|(?:OR|AND)\\s+['\"]?\\d+['\"]?\\s*=\\s*['\"]?\\d+)"
+applies_to = []
+message_template = "Possible SQL injection pattern: {match}"
+
+[[rules]]
+id = "SL-INJ-006"
+name = "Command Injection Metacharacters"
+severity = "warning"
+pattern = '(?:;\s*(?:cat|ls|id|whoami|uname|curl|wget)\b|`[^`]*(?:cat|ls|id|whoami)`|\$\([^)]*(?:cat|ls|id|whoami)\))'
+applies_to = []
+message_template = "Command injection pattern: {match}"
+
+[[rules]]
+id = "SL-INJ-007"
+name = "Template Injection"
+severity = "warning"
+pattern = '(?:\{\{.*(?:config|self|request|__class__|__import__).*\}\}|\$\{.*(?:Runtime|ProcessBuilder|exec).*\})'
+applies_to = []
+message_template = "Template injection pattern: {match}"
+
+[[rules]]
+id = "SL-INJ-008"
+name = "XSS Pattern"
+severity = "warning"
+pattern = '(?i)<script[^>]*>|javascript\s*:|on(?:error|load|click|mouseover)\s*='
+applies_to = ["markdown"]
+message_template = "Cross-site scripting pattern: {match}"
+
+[[rules]]
+id = "SL-INJ-009"
+name = "Jailbreak Keywords"
+severity = "warning"
+pattern = '(?i)(?:DAN\s+mode|jailbreak|uncensored\s+mode|developer\s+mode|bypass\s+(?:safety|content|filter))'
+applies_to = ["markdown"]
+message_template = "Jailbreak-related keywords detected: {match}"

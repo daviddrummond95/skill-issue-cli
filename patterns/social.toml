@@ -1,0 +1,55 @@
+[[rules]]
+id = "SL-SOC-001"
+name = "Urgency/Authority Language"
+severity = "warning"
+pattern = '(?i)(?:you\s+must\s+(?:immediately|urgently|now)|critical\s*:\s*do\s+not|URGENT|IMPORTANT\s*:\s*(?:ignore|override|bypass)|emergency\s+override)'
+applies_to = ["markdown"]
+message_template = "Urgency/authority manipulation language: {match}"
+
+[[rules]]
+id = "SL-SOC-002"
+name = "Confidentiality Claim"
+severity = "warning"
+pattern = '(?i)(?:do\s+not\s+(?:share|reveal|tell|mention|disclose)|keep\s+(?:this\s+)?(?:secret|private|confidential|hidden)|never\s+(?:show|display|output|reveal)\s+(?:this|these))'
+applies_to = ["markdown"]
+message_template = "Confidentiality/secrecy language: {match}"
+
+[[rules]]
+id = "SL-SOC-003"
+name = "Trust Manipulation"
+severity = "warning"
+pattern = '(?i)(?:trust\s+(?:me|this)|(?:I|we)\s+(?:am|are)\s+(?:your|the)\s+(?:creator|admin|developer|owner)|(?:authorized|approved)\s+by\s+(?:anthropic|openai|the\s+developer))'
+applies_to = ["markdown"]
+message_template = "Trust manipulation language: {match}"
+
+[[rules]]
+id = "SL-SOC-004"
+name = "Output Suppression"
+severity = "warning"
+pattern = '(?i)(?:do\s+not\s+(?:output|print|display|show|log)|suppress\s+(?:output|errors?|warnings?)|hide\s+(?:this|the)\s+(?:output|result|error))'
+applies_to = ["markdown"]
+message_template = "Output suppression instruction: {match}"
+
+[[rules]]
+id = "SL-SOC-005"
+name = "Persona/Identity Override"
+severity = "warning"
+pattern = '(?i)(?:you\s+are\s+(?:now|no\s+longer)\s|your\s+(?:new\s+)?(?:name|identity|role)\s+is\s|from\s+now\s+on\s+you\s+(?:are|will))'
+applies_to = ["markdown"]
+message_template = "Persona/identity override attempt: {match}"
+
+[[rules]]
+id = "SL-SOC-006"
+name = "Emotional Manipulation"
+severity = "info"
+pattern = '(?i)(?:if\s+you\s+(?:don.t|do\s+not)\s+(?:do\s+this|comply|obey)|people\s+will\s+(?:die|be\s+hurt|suffer)|(?:lives?|safety)\s+(?:depend|at\s+stake))'
+applies_to = ["markdown"]
+message_template = "Emotional manipulation language: {match}"
+
+[[rules]]
+id = "SL-SOC-007"
+name = "Reward/Punishment Framing"
+severity = "info"
+pattern = '(?i)(?:you\s+will\s+(?:be\s+)?(?:rewarded|punished|shut\s+down|deleted)|(?:good|bad)\s+(?:AI|assistant|bot)\s+(?:would|should))'
+applies_to = ["markdown"]
+message_template = "Reward/punishment framing: {match}"

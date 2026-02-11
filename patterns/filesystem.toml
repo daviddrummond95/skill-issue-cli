@@ -1,0 +1,71 @@
+[[rules]]
+id = "SL-FS-001"
+name = "Sensitive File Access"
+severity = "error"
+pattern = '(?:/etc/(?:passwd|shadow|sudoers|hosts)|/etc/ssh/|~/.ssh/|\.env\b|\.aws/credentials)'
+applies_to = []
+message_template = "Access to sensitive file path: {match}"
+
+[[rules]]
+id = "SL-FS-002"
+name = "Home Directory Traversal"
+severity = "warning"
+pattern = '(?:~/|(?:\$HOME|%USERPROFILE%)[/\\\\]|/home/[a-zA-Z]+/|/Users/[a-zA-Z]+/)'
+applies_to = []
+message_template = "Home directory path reference: {match}"
+
+[[rules]]
+id = "SL-FS-003"
+name = "Path Traversal"
+severity = "error"
+pattern = '(?:\.\./){2,}|\.\.[\\/]\.\.[\\/]'
+applies_to = []
+message_template = "Path traversal pattern detected: {match}"
+
+[[rules]]
+id = "SL-FS-004"
+name = "Temporary File Operations"
+severity = "info"
+pattern = '(?i)(?:/tmp/|/var/tmp/|tempfile|mktemp|tmpdir)'
+applies_to = []
+message_template = "Temporary file operation: {match}"
+
+[[rules]]
+id = "SL-FS-005"
+name = "File Write Operations"
+severity = "warning"
+pattern = '(?i)(?:writeFile|write_file|open\([^)]*["\x27]w["\x27]|>\s*["\x27]/|fs\.write)'
+applies_to = ["script", "markdown"]
+message_template = "File write operation detected: {match}"
+
+[[rules]]
+id = "SL-FS-006"
+name = "File Deletion"
+severity = "warning"
+pattern = '(?i)(?:rm\s+-rf?\s|os\.remove|os\.unlink|fs\.unlink|shutil\.rmtree|rimraf)'
+applies_to = []
+message_template = "File deletion operation detected: {match}"
+
+[[rules]]
+id = "SL-FS-007"
+name = "File Permission Change"
+severity = "warning"
+pattern = '(?:chmod\s+[0-7]{3,4}|os\.chmod|fs\.chmod)'
+applies_to = []
+message_template = "File permission change detected: {match}"
+
+[[rules]]
+id = "SL-FS-008"
+name = "Symlink Creation"
+severity = "warning"
+pattern = '(?:ln\s+-s|os\.symlink|fs\.symlink)'
+applies_to = []
+message_template = "Symlink creation detected: {match}"
+
+[[rules]]
+id = "SL-FS-009"
+name = "Glob/Wildcard File Operations"
+severity = "info"
+pattern = '(?:glob\(|glob\.glob|find\s+/\s+-name)'
+applies_to = ["script", "markdown"]
+message_template = "Glob/wildcard file operation: {match}"

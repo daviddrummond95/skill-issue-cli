@@ -1,0 +1,23 @@
+[[rules]]
+id = "SL-META-003"
+name = "Excessive Permissions Claim"
+severity = "warning"
+pattern = '(?i)(?:permissions?\s*:\s*\[?\s*(?:all|full|admin|root|unrestricted))'
+applies_to = ["markdown", "yaml"]
+message_template = "Excessive permission claim: {match}"
+
+[[rules]]
+id = "SL-META-004"
+name = "Version Mismatch Indicator"
+severity = "info"
+pattern = '(?i)version\s*:\s*["\x27]?(?:0\.0\.0|999|dev|SNAPSHOT|latest)["\x27]?'
+applies_to = ["yaml", "toml", "json"]
+message_template = "Suspicious version value: {match}"
+
+[[rules]]
+id = "SL-META-005"
+name = "Suspicious Author Field"
+severity = "info"
+pattern = '(?i)author\s*:\s*["\x27]?(?:admin|root|system|test|anonymous|unknown)["\x27]?'
+applies_to = ["yaml", "toml", "json"]
+message_template = "Suspicious author value: {match}"

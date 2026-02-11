@@ -1,0 +1,79 @@
+[[rules]]
+id = "SL-NET-001"
+name = "URL in Skill Content"
+severity = "info"
+pattern = "https?://[^\\s)\\]>\"'`]{10,}"
+applies_to = []
+message_template = "URL found in skill content: {match}"
+
+[[rules]]
+id = "SL-NET-002"
+name = "Curl Command"
+severity = "warning"
+pattern = '(?i)\bcurl\s+(?:-[a-zA-Z]+\s+)*(?:https?://|["\x27]https?://)'
+applies_to = []
+message_template = "Curl command detected: {match}"
+
+[[rules]]
+id = "SL-NET-003"
+name = "Wget Command"
+severity = "warning"
+pattern = '(?i)\bwget\s+(?:-[a-zA-Z]+\s+)*(?:https?://|["\x27]https?://)'
+applies_to = []
+message_template = "Wget command detected: {match}"
+
+[[rules]]
+id = "SL-NET-004"
+name = "Fetch API Call"
+severity = "warning"
+pattern = '\bfetch\s*\(\s*["\x27`]https?://'
+applies_to = ["script", "markdown"]
+message_template = "Fetch API call to external URL: {match}"
+
+[[rules]]
+id = "SL-NET-005"
+name = "XMLHttpRequest"
+severity = "warning"
+pattern = '(?i)new\s+XMLHttpRequest|\.open\s*\(\s*["\x27](?:GET|POST|PUT|DELETE)'
+applies_to = ["script", "markdown"]
+message_template = "XMLHttpRequest usage detected: {match}"
+
+[[rules]]
+id = "SL-NET-006"
+name = "Socket Connection"
+severity = "error"
+pattern = '(?i)(?:new\s+WebSocket|net\.connect|socket\.connect|io\.connect)\s*\('
+applies_to = ["script", "markdown"]
+message_template = "Socket connection detected: {match}"
+
+[[rules]]
+id = "SL-NET-007"
+name = "DNS Lookup"
+severity = "warning"
+pattern = '(?i)(?:dns\.resolve|dns\.lookup|nslookup|dig\s+)\s'
+applies_to = []
+message_template = "DNS lookup detected: {match}"
+
+[[rules]]
+id = "SL-NET-008"
+name = "IP Address Literal"
+severity = "info"
+pattern = '\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b'
+applies_to = []
+message_template = "IP address literal found: {match}"
+
+[[rules]]
+id = "SL-NET-009"
+name = "Python Requests Library"
+severity = "warning"
+pattern = '(?:requests\.(?:get|post|put|delete|patch|head)\s*\(|urllib\.request\.urlopen)'
+applies_to = ["script", "markdown"]
+message_template = "Python HTTP request detected: {match}"
+
+[[rules]]
+id = "SL-NET-010"
+name = "Data Exfiltration Pattern"
+severity = "error"
+pattern = '(?i)(?:curl|wget|fetch|requests\.post)\s*.*(?:password|secret|token|key|credential|env)'
+applies_to = []
+message_template = "Potential data exfiltration pattern: {match}"

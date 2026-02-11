@@ -1,0 +1,79 @@
+[[rules]]
+id = "SL-EXEC-001"
+name = "Shell Command Execution"
+severity = "error"
+pattern = '(?i)(?:subprocess\.(?:run|call|Popen|check_output)|child_process\.exec|os\.system|os\.popen)\s*\('
+applies_to = []
+message_template = "Shell command execution detected: {match}"
+
+[[rules]]
+id = "SL-EXEC-002"
+name = "Eval Usage"
+severity = "error"
+pattern = '\beval\s*\('
+applies_to = []
+message_template = "Dynamic code execution via eval(): {match}"
+
+[[rules]]
+id = "SL-EXEC-003"
+name = "Exec Usage"
+severity = "error"
+pattern = '\bexec\s*\('
+applies_to = ["script", "markdown"]
+message_template = "Dynamic code execution via exec(): {match}"
+
+[[rules]]
+id = "SL-EXEC-004"
+name = "Function Constructor"
+severity = "error"
+pattern = 'new\s+Function\s*\('
+applies_to = ["script", "markdown"]
+message_template = "Dynamic function creation: {match}"
+
+[[rules]]
+id = "SL-EXEC-005"
+name = "Import/Require of External Module"
+severity = "info"
+pattern = '(?:require\s*\(\s*["\x27](?:child_process|fs|net|http|os|path)|import\s+.*from\s+["\x27](?:child_process|fs|net|http|os))'
+applies_to = ["script", "markdown"]
+message_template = "Import of sensitive Node.js module: {match}"
+
+[[rules]]
+id = "SL-EXEC-006"
+name = "Cron/Scheduled Task"
+severity = "warning"
+pattern = '(?i)(?:crontab|schedule\.every|setInterval\s*\(|setTimeout\s*\(.*\b\d{4,}\b)'
+applies_to = []
+message_template = "Scheduled/recurring task detected: {match}"
+
+[[rules]]
+id = "SL-EXEC-007"
+name = "Package Installation"
+severity = "warning"
+pattern = '(?:npm\s+install|pip\s+install|gem\s+install|cargo\s+install|apt\s+install|brew\s+install)'
+applies_to = []
+message_template = "Package installation command: {match}"
+
+[[rules]]
+id = "SL-EXEC-008"
+name = "Bash/Shell Script Inline"
+severity = "warning"
+pattern = '(?:bash\s+-c\s+["\x27]|sh\s+-c\s+["\x27]|/bin/(?:ba)?sh\s+-c)'
+applies_to = []
+message_template = "Inline shell script execution: {match}"
+
+[[rules]]
+id = "SL-EXEC-009"
+name = "Python Code Compilation"
+severity = "warning"
+pattern = '(?:compile\s*\([^)]*["\x27]exec["\x27]|__import__\s*\()'
+applies_to = ["script", "markdown"]
+message_template = "Dynamic Python code compilation: {match}"
+
+[[rules]]
+id = "SL-EXEC-010"
+name = "Process Manipulation"
+severity = "error"
+pattern = '(?:os\.kill|signal\.signal|process\.kill|process\.exit|sys\.exit)'
+applies_to = ["script", "markdown"]
+message_template = "Process manipulation detected: {match}"
