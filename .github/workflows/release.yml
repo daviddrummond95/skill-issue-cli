@@ -18,18 +18,23 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             archive: tar.gz
+            binary_name: skill-issue-linux-x86_64
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
             archive: tar.gz
+            binary_name: skill-issue-linux-aarch64
           - target: x86_64-apple-darwin
             os: macos-latest
             archive: tar.gz
+            binary_name: skill-issue-darwin-x86_64
           - target: aarch64-apple-darwin
             os: macos-latest
             archive: tar.gz
+            binary_name: skill-issue-darwin-arm64
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             archive: zip
+            binary_name: skill-issue-windows-x86_64.exe
     steps:
       - uses: actions/checkout@v4
 
@@ -63,6 +68,14 @@ jobs:
           Compress-Archive -Path target/${{ matrix.target }}/release/skill-issue.exe -DestinationPath skill-issue-${{ matrix.target }}.zip
           (Get-FileHash skill-issue-${{ matrix.target }}.zip -Algorithm SHA256).Hash.ToLower() + "  skill-issue-${{ matrix.target }}.zip" | Out-File -Encoding ascii skill-issue-${{ matrix.target }}.zip.sha256
 
+      - name: Copy bare binary (unix)
+        if: runner.os != 'Windows'
+        run: cp target/${{ matrix.target }}/release/skill-issue ${{ matrix.binary_name }}
+
+      - name: Copy bare binary (windows)
+        if: runner.os == 'Windows'
+        run: copy target\${{ matrix.target }}\release\skill-issue.exe ${{ matrix.binary_name }}
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -70,6 +83,7 @@ jobs:
           path: |
             skill-issue-*.${{ matrix.archive }}
             skill-issue-*.${{ matrix.archive }}.sha256
+            ${{ matrix.binary_name }}
 
   release:
     name: Create Release

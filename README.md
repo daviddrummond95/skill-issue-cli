@@ -6,11 +6,19 @@ Scans skill files for hidden instructions, credential exfiltration, prompt injec
 
 ## Install
 
+**macOS / Linux (one-liner):**
+
+```bash
+curl -L https://github.com/daviddrummond95/skill-issue-cli/releases/latest/download/skill-issue-$(uname -s | tr A-Z a-z)-$(uname -m) -o skill-issue && chmod +x skill-issue
+```
+
+**From source:**
+
 ```bash
 cargo install skill-issue
 ```
 
-Or download a binary from [Releases](https://github.com/daviddrummond95/skill-issue-cli/releases).
+Or download an archive from [Releases](https://github.com/daviddrummond95/skill-issue-cli/releases).
 
 ## Usage
 
