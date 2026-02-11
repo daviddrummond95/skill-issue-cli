@@ -3,6 +3,8 @@ use predicates::prelude::*;
 use std::fs;
 use tempfile::TempDir;
 
+// ─── Remote scanning tests ───
+
 #[allow(deprecated)]
 fn cmd() -> Command {
     Command::cargo_bin("skill-issue").unwrap()
@@ -203,4 +205,47 @@ fn test_scan_performance() {
 
     // Should complete in under 5 seconds (generous for CI)
     assert!(elapsed.as_secs() < 5, "Scan took too long: {:?}", elapsed);
+}
+
+// ─── Remote scanning CLI tests ───
+
+#[test]
+fn test_remote_invalid_specifier() {
+    cmd()
+        .arg("--remote")
+        .arg("not-valid")
+        .arg("--no-color")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("invalid remote specifier"));
+}
+
+#[test]
+#[ignore] // requires network
+fn test_remote_repo_not_found() {
+    cmd()
+        .arg("--remote")
+        .arg("fake-owner-xxxxx/fake-repo-xxxxx")
+        .arg("--no-color")
+        .assert()
+        .code(2)
+        .stderr(predicate::str::contains("error"));
+}
+
+#[test]
+#[ignore] // requires network
+fn test_remote_scan_json_output() {
+    let output = cmd()
+        .arg("--remote")
+        .arg("vercel-labs/agent-skills@react-best-practices")
+        .arg("--no-color")
+        .arg("-f")
+        .arg("json")
+        .output()
+        .unwrap();
+
+    let json: serde_json::Value =
+        serde_json::from_slice(&output.stdout).expect("output should be valid JSON");
+    assert!(json["findings"].is_array());
+    assert!(json["summary"]["total"].as_u64().is_some());
 }

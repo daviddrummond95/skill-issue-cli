@@ -6,7 +6,7 @@ description = "Static security analyzer for Claude skill directories"
 license = "MIT"
 
 [dependencies]
-clap = { version = "4", features = ["derive"] }
+clap = { version = "4", features = ["derive", "env"] }
 regex = "1"
 walkdir = "2"
 serde = { version = "1", features = ["derive"] }
@@ -16,6 +16,7 @@ toml = "0.8"
 comfy-table = "7"
 colored = "2"
 unicode-normalization = "0.1"
+ureq = { version = "3", features = ["json"] }
 
 [dev-dependencies]
 assert_cmd = "2"
