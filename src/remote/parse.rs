@@ -38,7 +38,7 @@ impl RemoteTarget {
         let parts: Vec<&str> = url.splitn(4, '/').collect();
 
         if parts.len() < 2 || parts[0].is_empty() || parts[1].is_empty() {
-            return Err(format!("invalid GitHub URL: must contain owner/repo"));
+            return Err("invalid GitHub URL: must contain owner/repo".to_string());
         }
 
         let owner = parts[0].to_string();

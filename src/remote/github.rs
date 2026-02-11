@@ -177,7 +177,7 @@ fn discover_skills(
 
     let skills: Vec<DiscoveredSkill> = skill_files
         .iter()
-        .filter_map(|entry| {
+        .map(|entry| {
             // "react-best-practices/SKILL.md" → prefix "react-best-practices/", name "react-best-practices"
             // "SKILL.md" at root → prefix "", name is the repo name
             let prefix = match entry.path.rfind('/') {
@@ -196,10 +196,10 @@ fn discover_skills(
                     .to_string()
             };
 
-            Some(DiscoveredSkill {
+            DiscoveredSkill {
                 prefix: prefix.to_string(),
                 name,
-            })
+            }
         })
         .collect();
 
